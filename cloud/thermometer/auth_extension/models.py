@@ -16,10 +16,10 @@ class UserProfile(models.Model):
         time_zone: user's time zone (default UTC)
 
     References:
-        https://docs.djangoproject.com/en/1.11/ref/contrib/auth/#django.contrib.auth.models.User
-        https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html
-        https://github.com/mfogel/django-timezone-field
-        https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+        * https://docs.djangoproject.com/en/1.11/ref/contrib/auth/#django.contrib.auth.models.User
+        * https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html
+        * https://github.com/mfogel/django-timezone-field
+        * https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
     """
 
@@ -38,3 +38,15 @@ class UserProfile(models.Model):
     )
 
     time_zone = TimeZoneField(default='UTC')
+
+
+@receiver(post_save, sender=get_user_model())
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=get_user_model())
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
