@@ -18,5 +18,6 @@ from .admin import admin_site
 
 urlpatterns = [
     path('admin/', admin_site.urls),
-    path(r'rest-auth/', include('rest_auth.urls'))
+    path('rest-auth/', include('rest_auth.urls')),
+    path('accounts/', include('auth_extension.urls'))
 ]
