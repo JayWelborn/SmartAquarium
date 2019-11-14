@@ -21,6 +21,7 @@ class PermissionsTestCase(APITestCase):
         tearDown: Empty test database after test completion
         test_is_owner: Ensure is_owner returns true when requester owns object,
             and false when they don't
+        test_is_user: Users should be able to alter their own data, but not others
     """
 
     def setUp(self):
