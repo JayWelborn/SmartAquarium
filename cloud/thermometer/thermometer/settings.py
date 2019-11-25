@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'timezone_field',
     'auth_extension',
+    'temperature',
 ]
 
 MIDDLEWARE = [
