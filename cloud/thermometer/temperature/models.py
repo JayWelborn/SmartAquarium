@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import randint
 import uuid
 
 from django.db import models
@@ -34,21 +35,21 @@ class Thermometer(models.Model):
         null=True
     )
     therm_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    display_name = models.CharField(max_length=75, default='Thermometer Name Not Provided')
+    display_name = models.CharField(max_length=75, default=f'Smart Thermometer{randint(0, 10000)}')
     created_date = models.DateField(default=datetime.utcnow)
     registered = models.BooleanField(default=False)
     registration_date = models.DateField(blank=True, null=True)
 
-    def register(self, owner, reg_id):
-        """Register new thermometer if provided correct ID.
-
-        If provided incorrect ID, raise Thermometer Registration Error.
+    def register(self, owner):
         """
-        if reg_id == self.therm_id:
+        Register thermometer to provided user. If this thermometer is already
+        registered, raise ThermometerRegistrationError.
+        """
+        if not self.registered:
             self.owner = owner
             self.registered = True
-            self.registration_date = datetime.today
+            self.registration_date = datetime.utcnow()
             self.save()
         else:
-            raise ThermometerRegistrationError("Incorrect ID Provided")
+            raise ThermometerRegistrationError("Thermometer Already Registered")
 
