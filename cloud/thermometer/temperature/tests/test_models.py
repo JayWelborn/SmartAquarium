@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
-from temperature.models import Thermometer
+from temperature.models import Thermometer, TemperatureReading
 from temperature.exceptions import ThermometerRegistrationError
 
 
@@ -120,3 +120,41 @@ class ThermometerModelTests(TestCase):
             therms.append(therm)
         
         self.assertEqual(len(self.user.thermometers.all()), 20)
+
+
+class TemperatureReadingModelTests(TestCase):
+    """Tests for TemperatureReading class
+
+    Methods:
+        create_many_temperature_records: Create a bunch of temperature records, ensuring they can be
+            saved as expected, and that deleting the user associated with the thermometer cascades
+            into deleting the temperatures as well
+
+    """
+
+    def test_create_many_temperature_records(self):
+        """
+        Create a bunch of temperature records and ensure they can be saved/retrieved as expected
+        """
+
+        user = get_user_model().objects.create_user(
+            username="test",
+            password="test"
+        )
+
+        thermometer = Thermometer(
+            display_name="test therm"
+        )
+        thermometer.register(user)
+        for i in range(1000):
+            temp = TemperatureReading(
+                degrees_c=i/10,
+                thermometer=thermometer
+            )
+            temp.save()
+        self.assertEquals(len(thermometer.temperatures.all()), 1000)
+
+        user.delete()
+        self.assertEquals(len(Thermometer.objects.all()), 0)
+        self.assertEquals(len(TemperatureReading.objects.all()), 0)
+        self.assertEquals(len(get_user_model().objects.all()), 0)
