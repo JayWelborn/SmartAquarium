@@ -83,7 +83,7 @@ class TemperatureReading(models.Model):
     )
     time_recorded = models.DateTimeField(default=timezone.now)
 
-    def to_farenheit(self):
+    def get_farenheit(self):
         """
         Convert temperature to Fahrenheit 
         """

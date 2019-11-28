@@ -129,32 +129,57 @@ class TemperatureReadingModelTests(TestCase):
         create_many_temperature_records: Create a bunch of temperature records, ensuring they can be
             saved as expected, and that deleting the user associated with the thermometer cascades
             into deleting the temperatures as well
+        temperature_conversion: Test conversion of C to F temperatures
 
     """
+
+    def setUp(self):
+        """
+        Set up thermometer record for class tests
+        """
+        self.user = get_user_model().objects.create_user(
+            username="test",
+            password="test"
+        )
+
+        self.thermometer = Thermometer(
+            display_name="test therm"
+        )
+
+        self.thermometer.register(self.user)
+
+    def tearDown(self):
+        """
+        Clear test database after tests run
+        """
+        self.user.delete()
+        self.assertEquals(len(Thermometer.objects.all()), 0)
+        self.assertEquals(len(TemperatureReading.objects.all()), 0)
+        self.assertEquals(len(get_user_model().objects.all()), 0)
 
     def test_create_many_temperature_records(self):
         """
         Create a bunch of temperature records and ensure they can be saved/retrieved as expected
         """
-
-        user = get_user_model().objects.create_user(
-            username="test",
-            password="test"
-        )
-
-        thermometer = Thermometer(
-            display_name="test therm"
-        )
-        thermometer.register(user)
         for i in range(1000):
             temp = TemperatureReading(
                 degrees_c=i/10,
-                thermometer=thermometer
+                thermometer=self.thermometer
             )
             temp.save()
-        self.assertEquals(len(thermometer.temperatures.all()), 1000)
+        self.assertEquals(len(self.thermometer.temperatures.all()), 1000)
 
-        user.delete()
-        self.assertEquals(len(Thermometer.objects.all()), 0)
-        self.assertEquals(len(TemperatureReading.objects.all()), 0)
-        self.assertEquals(len(get_user_model().objects.all()), 0)
+    def test_temperature_conversion(self):
+        """
+        get_fahrenheit should accurately convert temperatures
+        """
+
+        temp = TemperatureReading(
+            thermometer=self.thermometer,
+            degrees_c=-40
+        )
+        self.assertEquals(temp.degrees_c, temp.get_farenheit())
+
+        temp = TemperatureReading(
+            thermometer=self.thermometer
+        )
