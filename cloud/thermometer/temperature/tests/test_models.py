@@ -178,8 +178,28 @@ class TemperatureReadingModelTests(TestCase):
             thermometer=self.thermometer,
             degrees_c=-40
         )
-        self.assertEquals(temp.degrees_c, temp.get_farenheit())
+        self.assertEquals(temp.degrees_c, temp.get_fahrenheit())
 
         temp = TemperatureReading(
-            thermometer=self.thermometer
+            thermometer=self.thermometer,
+            degrees_c=-50
         )
+        self.assertEquals(temp.get_fahrenheit(), -58.0)
+
+        temp = TemperatureReading(
+            thermometer=self.thermometer,
+            degrees_c=0
+        )
+        self.assertEquals(temp.get_fahrenheit(), 32)
+
+        temp = TemperatureReading(
+            thermometer=self.thermometer,
+            degrees_c=1
+        )
+        self.assertEquals(temp.get_fahrenheit(), 33.8)
+
+        temp = TemperatureReading(
+            thermometer=self.thermometer,
+            degrees_c=37
+        )
+        self.assertEquals(temp.get_fahrenheit(), 98.6)
