@@ -202,4 +202,4 @@ class TemperatureReadingModelTests(TestCase):
             thermometer=self.thermometer,
             degrees_c=37
         )
-        self.assertEquals(temp.get_fahrenheit(), 98.6)
+        self.assertAlmostEqual(temp.get_fahrenheit(), 98.6)
