@@ -5,10 +5,12 @@ from .models import UserProfile
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer to convert Users to various data types.
+    """Serializer to convert Users to JSON.
 
     Fields:
         profile: User's profile data
+
+    Metaclass Fields:
         model: model to be serialized
         fields: fields to include in serialization
         read_only_fields: specifies which fields can't be written to via API

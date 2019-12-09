@@ -5,7 +5,7 @@ from rest_framework.test import (APITestCase, APIRequestFactory,
                                  )
 from rest_framework.views import APIView
 
-from thermometer.permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
+from utils.permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 from auth_extension.viewsets import UserViewset, UserProfileViewset
 
 

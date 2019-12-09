@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions
 
-from thermometer.permissions import IsOwnerOrReadOnly, IsSelfOrAdmin, IsUserOrReadOnly
+from utils.permissions import IsOwnerOrReadOnly, IsSelfOrAdmin, IsUserOrReadOnly
 
 from .models import UserProfile
 from .serializers import UserSerializer, UserProfileSerializer
