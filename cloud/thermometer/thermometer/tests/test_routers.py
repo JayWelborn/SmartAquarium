@@ -29,8 +29,8 @@ class APIRootTestCase(APITestCase):
             'password_reset': 'rest_auth:rest_password_reset',
             'password_reset_confirm': 'rest_auth:rest_password_reset_confirm',
             'password_change': 'rest_auth:rest_password_change',
-            'register': 'rest_registration:rest_register',
-            'verify_email': 'rest_registration:rest_verify_email',
+            # 'register': 'rest_registration:rest_register',
+            # 'verify_email': 'rest_registration:rest_verify_email',
         }
         for key, value in expected_additions.items():
             self.assertIn(key, response.data)

@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 
 from utils.permissions import IsOwnerOrReadOnly, IsSelfOrAdmin, IsUserOrReadOnly
 
@@ -25,7 +25,6 @@ class TemperatureReadingViewset(viewsets.ModelViewSet):
     Fields:
         queryset: List of temperature readings sorted by date
         serializer_class: Serializer used to convert temperature readings to JSON
-        permissions_classes: Restrictions on who can access which http methods
     """
     queryset = TemperatureReading.objects.all().order_by('time_recorded')
     serializer_class = TemperatureReadingSerializer

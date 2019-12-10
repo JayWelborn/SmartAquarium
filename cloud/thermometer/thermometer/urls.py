@@ -15,10 +15,17 @@ Including another URLconf
 """
 from django.urls import path, include
 from .admin import admin_site
+from .routers import ROUTER
+
+from temperature import viewsets as temp_vs
+from auth_extension import viewsets as auth_vs
+
+ROUTER.register('users', auth_vs.UserViewset)
+ROUTER.register('profiles', auth_vs.UserProfileViewset)
+ROUTER.register('thermometers', temp_vs.ThermometerViewset)
 
 urlpatterns = [
     path('admin/', admin_site.urls),
-    path('rest-auth/', include('rest_auth.urls')),
-    path('accounts/', include('auth_extension.urls')),
-    path('temperature/', include('temperature.urls'))
+    path('rest-auth/', include(('rest_auth.urls', 'rest_auth'))),
+    path('', include(ROUTER.urls))
 ]
