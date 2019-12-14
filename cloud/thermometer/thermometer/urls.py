@@ -23,6 +23,7 @@ from auth_extension import viewsets as auth_vs
 ROUTER.register('users', auth_vs.UserViewset)
 ROUTER.register('profiles', auth_vs.UserProfileViewset)
 ROUTER.register('thermometers', temp_vs.ThermometerViewset)
+ROUTER.register('temperatures', temp_vs.TemperatureReadingViewset)
 
 urlpatterns = [
     path('admin/', admin_site.urls),

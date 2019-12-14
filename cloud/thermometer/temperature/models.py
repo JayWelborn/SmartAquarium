@@ -2,7 +2,7 @@ from random import randint
 import uuid
 
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 
 from .exceptions import ThermometerRegistrationError
@@ -50,7 +50,8 @@ class Thermometer(models.Model):
             self.owner = owner
             self.registered = True
             self.registration_date = timezone.now()
-            self.save()
+            with transaction.atomic():
+                self.save()
         else:
             raise ThermometerRegistrationError("Thermometer Already Registered")
 

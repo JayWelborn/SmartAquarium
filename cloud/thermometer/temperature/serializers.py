@@ -18,7 +18,7 @@ class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = TemperatureReading
-        fields = ('url', 'thermometer', 'degrees_c', 'time_recorded')
+        fields = ('url', 'id', 'thermometer', 'degrees_c', 'time_recorded')
         read_only_fields = ('thermometer', 'time_recorded')
 
     # def create(self, validated_data):
