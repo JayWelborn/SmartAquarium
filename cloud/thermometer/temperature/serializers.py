@@ -21,11 +21,13 @@ class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'id', 'thermometer', 'degrees_c', 'time_recorded')
         read_only_fields = ('thermometer', 'time_recorded')
 
-    # def create(self, validated_data):
-    #     """
-    #     Create a new temperature record
-    #     """
-    #     therm_id = validated_data.get('')
+    def update(self, instance, validated_data):
+        """
+        Overwrite to disallow updating temp records through serializer
+        """
+        msg = "Updating Temperature Readings via API not allowed. " + \
+              "Contact a system administrator for assistance."
+        raise TypeError(msg)
 
 
 class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
