@@ -127,3 +127,14 @@ class TemperatureReadingSerializerTests(APITestCase):
             temp, data=invalid_data, context=self.context, partial=True
         )
         self.assertFalse(serializer.is_valid())
+
+
+class ThermometerSerializerTests(APITestCase):
+    """Tests for Thermometer Serializer
+
+    Methods:
+        setUp: create test data
+        tearDown: clean test database
+        serializer_accepts_valid_data: Serializer should accept
+
+    """

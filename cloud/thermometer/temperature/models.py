@@ -8,6 +8,9 @@ from django.utils import timezone
 from .exceptions import ThermometerRegistrationError
 
 
+def get_random_name():
+    return f'Smart Thermometer {randint(0, 100000)}'
+
 # Create your models here.
 class Thermometer(models.Model):
     """Stores information about thermometers
@@ -36,7 +39,7 @@ class Thermometer(models.Model):
         null=True
     )
     therm_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    display_name = models.CharField(max_length=75, default=f'Smart Thermometer{randint(0, 10000)}')
+    display_name = models.CharField(max_length=75, default=get_random_name)
     created_date = models.DateField(default=timezone.now)
     registered = models.BooleanField(default=False)
     registration_date = models.DateField(blank=True, null=True)

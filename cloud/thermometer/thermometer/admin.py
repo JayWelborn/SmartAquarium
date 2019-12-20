@@ -5,8 +5,11 @@ from django.contrib.auth.models import Group
 from auth_extension.admin import UserProfileAdmin
 from auth_extension.models import UserProfile
 
+from temperature.admin import ThermometerAdmin
+from temperature.models import Thermometer
 
-class ThermometerAdmin(AdminSite):
+
+class CustomAdmin(AdminSite):
     """Admin site with customized header
 
     References:
@@ -17,7 +20,8 @@ class ThermometerAdmin(AdminSite):
     site_title = 'Thermometer Administration'
 
 
-admin_site = ThermometerAdmin(name='admin')
+admin_site = CustomAdmin()
 admin_site.register(get_user_model())
 admin_site.register(Group)
 admin_site.register(UserProfile, UserProfileAdmin)
+admin_site.register(Thermometer, ThermometerAdmin)
