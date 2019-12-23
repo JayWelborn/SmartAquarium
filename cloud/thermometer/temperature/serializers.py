@@ -1,5 +1,8 @@
+from django.db import transaction
+
 from rest_framework import serializers
 
+from .exceptions import ThermometerCreationError
 from .models import Thermometer, TemperatureReading
 
 class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,7 +22,7 @@ class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = TemperatureReading
         fields = ('url', 'id', 'thermometer', 'degrees_c', 'time_recorded')
-        read_only_fields = ('thermometer', 'time_recorded')
+        read_only_fields = ('id', 'thermometer', 'time_recorded')
 
     def update(self, instance, validated_data):
         """
@@ -42,9 +45,14 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         fields: Fields to include in serialization
         read_only_fields: Specifies fields as read only
 
+    Methods:
+        create: Create new thermometer record. When thermometers are created, they should not have
+            any associated temperature readings, so if temperature readings are included throw an
+            error.
+        update: Update an existing thermometer record.
     """
     temperatures = TemperatureReadingSerializer(
-        many=True, read_only=False)
+        many=True, read_only=False, required=False, allow_null=True)
     owner = serializers.HyperlinkedRelatedField(
         many=False, view_name='user-detail', read_only=True)
 
@@ -52,3 +60,51 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         model = Thermometer
         fields = ('url', 'owner', 'temperatures', 'therm_id', 'display_name', 'created_date', 'registered', 'registration_date')
         read_only_fields = ('therm_id', 'owner', 'created_date', 'registration_date', 'registered')
+    
+    def create(self, validated_data):
+        """
+        Create new thermometer record. When thermometers are created, they should not have
+        any associated temperature readings, so if temperature readings are included throw an
+        error.
+        """
+        if 'temperatures' in validated_data and validated_data['temperatures']:
+            raise ThermometerCreationError("New thermometers should not have temperature readings.")
+
+        thermometer = Thermometer()
+        if 'display_name' in validated_data:
+            thermometer.display_name = validated_data['display_name']
+        
+        with transaction.atomic():
+            thermometer.save()
+        return thermometer
+
+    def update(self, instance, validated_data):
+        """
+        Update an existing thermometer record. This is the method by which new temperature readings
+        will be associated with an existing thermomter.
+        """
+
+        temps = []
+        if 'temperatures' in validated_data:
+            temps = validated_data['temperatures']
+        
+        # Update instance fields
+        for key, value in validated_data.items():
+            if (
+                key in dir(instance) and
+                validated_data[key] != getattr(instance, key) and
+                key != 'temperatures'
+            ):
+                setattr(instance, key, value)
+
+        for temp in temps:
+            new_reading = TemperatureReading.objects.create(
+                degrees_c=temp['degrees_c'],
+                thermometer=instance
+            )
+            with transaction.atomic():
+                new_reading.save()
+                     
+        with transaction.atomic():
+            instance.save()
+        return instance

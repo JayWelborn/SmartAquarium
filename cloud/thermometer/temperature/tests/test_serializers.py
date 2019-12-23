@@ -1,10 +1,12 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from rest_framework.test import APITestCase
 
 from temperature.models import Thermometer, TemperatureReading
-from temperature.serializers import TemperatureReadingSerializer
+from temperature.serializers import TemperatureReadingSerializer, ThermometerSerializer
 
 
 class TemperatureReadingSerializerTests(APITestCase):
@@ -135,6 +137,58 @@ class ThermometerSerializerTests(APITestCase):
     Methods:
         setUp: create test data
         tearDown: clean test database
-        serializer_accepts_valid_data: Serializer should accept
+        serializer_create_valid_data: Serializer should accept valid data to create new thermometer
 
     """
+
+    def setUp(self):
+        """
+        create test data
+        """
+        self.user = get_user_model().objects.create_user(
+            username="test",
+            password="testingpass",
+            email="test@e.mail"
+        )
+        self.test_thermometer = Thermometer.objects.create(
+            display_name="test thermometer"
+        )
+
+    def tearDown(self):
+        """
+        delete test data
+        """
+        for therm in Thermometer.objects.all():
+            therm.delete()
+        for user in get_user_model().objects.all():
+            user.delete()
+
+    def test_serializer_create_valid_data(self):
+        """
+        Serializer should accept valid data and create a new thermometer with no owner or
+        temperature readings associated.
+        """
+        valid_data = {
+            'display_name': 'testy thermometer',
+        }
+        serializer = ThermometerSerializer(data=valid_data)
+        self.assertTrue(serializer.is_valid())
+        new_therm = serializer.save()
+        self.assertEquals(new_therm.display_name, valid_data['display_name'])
+        self.assertEquals(len(new_therm.temperatures.all()), 0)
+
+        valid_data = {
+            'display_name': 'testy thermometer2',
+            'temperatures': []
+        }
+        serializer = ThermometerSerializer(data=valid_data)
+        self.assertTrue(serializer.is_valid())
+        new_therm = serializer.save()
+        self.assertEquals(new_therm.display_name, valid_data['display_name'])
+        self.assertEquals(len(new_therm.temperatures.all()), 0)
+
+        serializer = ThermometerSerializer(data={})
+        self.assertTrue(serializer.is_valid())
+        new_therm = serializer.save()
+        self.assertTrue(re.match(new_therm.display_name, r'Smart Thermometer \d+'))
+        self.assertEquals(len(new_therm.temperatures.all()), 0)
