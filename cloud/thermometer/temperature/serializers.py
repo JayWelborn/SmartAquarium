@@ -28,8 +28,8 @@ class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
         """
         Overwrite to disallow updating temp records through serializer
         """
-        msg = "Updating Temperature Readings via API not allowed. " + \
-              "Contact a system administrator for assistance."
+        msg = 'Updating Temperature Readings via API not allowed. ' + \
+              'Contact a system administrator for assistance.'
         raise TypeError(msg)
 
 
@@ -67,10 +67,7 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         any associated temperature readings, so if temperature readings are included throw an
         error.
         """
-        if 'temperatures' in validated_data and validated_data['temperatures']:
-            raise ThermometerCreationError("New thermometers should not have temperature readings.")
-
-        thermometer = Thermometer()
+        thermometer = Thermometer.objects.create()
         if 'display_name' in validated_data:
             thermometer.display_name = validated_data['display_name']
         
@@ -83,7 +80,6 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         Update an existing thermometer record. This is the method by which new temperature readings
         will be associated with an existing thermomter.
         """
-
         temps = []
         if 'temperatures' in validated_data:
             temps = validated_data['temperatures']
@@ -108,3 +104,10 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         with transaction.atomic():
             instance.save()
         return instance
+
+    def validate_temperatures(self, value):
+        if not self.instance and value:
+            raise serializers.ValidationError(
+                'New Thermometers cannot be created with temperature readings'
+            )
+        return value

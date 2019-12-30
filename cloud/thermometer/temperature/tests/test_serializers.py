@@ -65,7 +65,6 @@ class TemperatureReadingSerializerTests(APITestCase):
         self.assertEqual(0, len(TemperatureReading.objects.all()))
         self.assertEqual(0, len(get_user_model().objects.all()))
         self.assertEqual(0, len(Thermometer.objects.all()))
-        
 
     def test_temperature_reading_serialized_correctly(self):
         """
@@ -137,7 +136,7 @@ class ThermometerSerializerTests(APITestCase):
     Methods:
         setUp: create test data
         tearDown: clean test database
-        serializer_create_valid_data: Serializer should accept valid data to create new thermometer
+        create_valid_data: Serializer should accept valid data to create new thermometer
 
     """
 
@@ -146,13 +145,14 @@ class ThermometerSerializerTests(APITestCase):
         create test data
         """
         self.user = get_user_model().objects.create_user(
-            username="test",
-            password="testingpass",
-            email="test@e.mail"
+            username='test',
+            password='testingpass',
+            email='test@e.mail'
         )
         self.test_thermometer = Thermometer.objects.create(
-            display_name="test thermometer"
+            display_name='test thermometer'
         )
+        self.context = {'request': None}
 
     def tearDown(self):
         """
@@ -163,7 +163,7 @@ class ThermometerSerializerTests(APITestCase):
         for user in get_user_model().objects.all():
             user.delete()
 
-    def test_serializer_create_valid_data(self):
+    def test_create_valid_data(self):
         """
         Serializer should accept valid data and create a new thermometer with no owner or
         temperature readings associated.
@@ -190,5 +190,51 @@ class ThermometerSerializerTests(APITestCase):
         serializer = ThermometerSerializer(data={})
         self.assertTrue(serializer.is_valid())
         new_therm = serializer.save()
-        self.assertTrue(re.match(new_therm.display_name, r'Smart Thermometer \d+'))
+        self.assertTrue(re.match(r'Smart Thermometer \d+', new_therm.display_name))
         self.assertEquals(len(new_therm.temperatures.all()), 0)
+
+    def test_create_invalid_data(self):
+        """
+        Thermometers should not be able to be created with temperature records.
+        """
+        invalid_data = {
+            'display_name': 'invalid!!!',
+            'temperatures': [
+                {'degrees_c': 101},
+            ]
+        }
+        serializer = ThermometerSerializer(data=invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('temperatures', serializer.errors)
+        self.assertEquals(str(serializer.errors['temperatures'][0]),
+            'New Thermometers cannot be created with temperature readings'
+        )
+
+    def test_update_add_temperatures(self):
+        """
+        Passing new temperature values to serializer with existing instance should create new
+        temperature readings linked to instance.
+        """
+        self.test_thermometer.register(self.user)
+        self.assertIs(self.test_thermometer.owner, self.user)
+        expected_temps = [28, 21, 22]
+        data = {
+            'temperatures': [
+                {'degrees_c': expected_temps[0]},
+                {'degrees_c': expected_temps[1]},
+                {'degrees_c': expected_temps[2]},
+            ]
+        }
+        serializer = ThermometerSerializer(
+            self.test_thermometer, data=data, context=self.context, partial=True
+        )
+        self.assertTrue(serializer.is_valid())
+        thermometer = serializer.save()
+        self.assertEquals(thermometer.display_name, 'test thermometer')
+        self.assertIs(thermometer.owner, self.user)
+        self.assertEquals(len(thermometer.temperatures.all()), 3)
+        temps = thermometer.temperatures.all().order_by('time_recorded')
+        for i in range(len(expected_temps)):
+            self.assertEquals(temps[i].degrees_c, expected_temps[i])
+
+        self.assertEquals(len(TemperatureReading.objects.all()), 3)
