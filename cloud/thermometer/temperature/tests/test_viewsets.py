@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.urls import reverse
 
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
@@ -36,13 +37,9 @@ class TemperatureReadingViewsetTests(APITestCase):
         self.factory = APIRequestFactory()
         self.listview = TemperatureReadingViewset.as_view({
             'get': 'list',
-            'post': 'create'
         })
         self.detailview = TemperatureReadingViewset.as_view({
             'get': 'retrieve',
-            'put': 'update',
-            'patch': 'partial_update',
-            'delete': 'destroy'
         })
 
     def tearDown(self):
@@ -53,8 +50,40 @@ class TemperatureReadingViewsetTests(APITestCase):
             with transaction.atomic():
                 user.delete()
 
-    def test_nothing(self):
+        self.assertEqual(len(TemperatureReading.objects.all()), 0)
+        self.assertEqual(len(Thermometer.objects.all()), 0)
+
+    def test_unauthenticated_user_permissions(self):
         """
-        test nothing other than that tests are running
+        Unauthenticated users should not be able to view, create, edit, or delete temperature
+        readings
         """
-        self.assertIs(self.user, self.thermometer.owner)
+        self.client.logout()
+
+        # list view
+        url = reverse('temperaturereading-list')
+        request = self.factory.get(url)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 403)
+
+        request = self.factory.post(url, {'degrees_c': 23})
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 403)
+
+        # detail view
+        for temp in self.thermometer.temperatures.all():
+            url = reverse('temperaturereading-detail', args=[temp.pk])
+            request = self.factory.get(url)
+            response = self.detailview(request, pk=temp.pk)
+            self.assertEquals(response.status_code, 403)
+
+            data = {
+                'degrees_c': 12
+            }
+            request = self.factory.put(url, data=data, partial=True)
+            response = self.detailview(request)
+            self.assertEqual(response.status_code, 403)
+
+            request = self.factory.delete(url)
+            response = self.detailview(request)
+            self.assertEqual(response.status_code, 403)

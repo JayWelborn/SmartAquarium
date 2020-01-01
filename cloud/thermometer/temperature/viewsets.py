@@ -1,6 +1,6 @@
 from rest_framework import viewsets, mixins
 
-from utils.permissions import IsOwnerOrReadOnly, IsSelfOrAdmin, IsUserOrReadOnly
+from utils.permissions import IsOwnerOrStaff, IsSelfOrAdmin, IsUserOrReadOnly
 
 from .models import Thermometer, TemperatureReading
 from .permissions import IsThermometerOwnerOrStaff
@@ -17,7 +17,7 @@ class ThermometerViewset(viewsets.ModelViewSet):
     """
     queryset = Thermometer.objects.all().order_by('created_date')
     serializer_class = ThermometerSerializer
-    permissions_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsOwnerOrStaff,)
 
 
 class TemperatureReadingViewset(mixins.ListModelMixin,
@@ -32,4 +32,3 @@ class TemperatureReadingViewset(mixins.ListModelMixin,
     queryset = TemperatureReading.objects.all().order_by('time_recorded')
     serializer_class = TemperatureReadingSerializer
     permission_classes = (IsThermometerOwnerOrStaff,)
-    
