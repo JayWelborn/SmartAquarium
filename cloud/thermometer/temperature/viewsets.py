@@ -15,7 +15,7 @@ class ThermometerViewset(viewsets.ModelViewSet):
         serializer_class: Serializer used to convert thermometer to JSON
         permission_classes: restrictions on who can access which http methods
     """
-    queryset = Thermometer.objects.all().order_by('created_date')
+    queryset = Thermometer.objects.all()
     serializer_class = ThermometerSerializer
     permission_classes = (IsOwnerOrStaff,)
 
@@ -26,9 +26,20 @@ class TemperatureReadingViewset(mixins.ListModelMixin,
     """Viewset for Temperature Readings
 
     Fields:
-        queryset: List of temperature readings sorted by date
         serializer_class: Serializer used to convert temperature readings to JSON
+        permission_classes: Permission classes to be applied ot incoming requests
+
+    Methods:
+        get_queryset: Queryset for the view should include records owned by 
     """
-    queryset = TemperatureReading.objects.all().order_by('time_recorded')
     serializer_class = TemperatureReadingSerializer
     permission_classes = (IsThermometerOwnerOrStaff,)
+
+    def get_queryset(self):
+        """
+        Queryset should include only thermometers related to current user. If user is staff,
+        they can see all records
+        """
+        if self.request.user.is_staff:
+            return TemperatureReading.objects.all()
+        return TemperatureReading.objects.filter(thermometer__owner=self.request.user)

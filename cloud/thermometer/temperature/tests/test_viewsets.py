@@ -29,11 +29,15 @@ class TemperatureReadingViewsetTests(APITestCase):
             display_name='test thermometer'
         )
         self.thermometer.register(self.user)
+        with transaction.atomic():
+            self.thermometer.save()
         for i in range(10):
             temp = TemperatureReading(
                 degrees_c=i,
                 thermometer=self.thermometer
             )
+            with transaction.atomic():
+                temp.save()
         self.factory = APIRequestFactory()
         self.listview = TemperatureReadingViewset.as_view({
             'get': 'list',
@@ -87,3 +91,54 @@ class TemperatureReadingViewsetTests(APITestCase):
             request = self.factory.delete(url)
             response = self.detailview(request)
             self.assertEqual(response.status_code, 403)
+
+    def test_authenticated_get(self):
+        """
+        Users should be able to see their own temperature readings
+        Staff should be able to see all temperature readings
+        """
+        # owner should see all temps created
+        url = reverse('temperaturereading-list')
+        request = self.factory.get(url)
+        force_authenticate(request, user=self.user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), len(TemperatureReading.objects.all()))
+
+        # new user should see no temps
+        user = get_user_model().objects.create_user(
+            username='new',
+            password='newpass',
+            email='em@a.il'
+        )
+        request = self.factory.get(url)
+        force_authenticate(request, user=user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), 0)
+
+        # giving new user a thermometer with a temp should get 1 temp on get
+        therm = Thermometer()
+        therm.register(user)
+        temp = TemperatureReading(thermometer=therm, degrees_c=1)
+        with transaction.atomic():
+            temp.save()
+        
+        request = self.factory.get(url)
+        force_authenticate(request, user=user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), 1)
+
+        superuser = get_user_model().objects.create_superuser(
+            username='superuser',
+            password='newpass',
+            email='super@email.it'
+        )
+
+        request = self.factory.get(url)
+        force_authenticate(request, user=superuser)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), len(TemperatureReading.objects.all()))
+
