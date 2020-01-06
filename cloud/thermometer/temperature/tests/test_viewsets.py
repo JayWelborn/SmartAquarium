@@ -14,6 +14,11 @@ class TemperatureReadingViewsetTests(APITestCase):
     Methods:
         setUp: Create test data
         tearDown: Clear test database
+        test_unauthenticated_user_permissions: Unauthenticated users should not be able to view,
+            create, edit, or delete temperature readings
+        test_authenticated_get: Users should be able to see their own temperature readings
+            Staff should be able to see all temperature readings
+        test_authenticated_post: Viewset should not allow post requests
     
     """
     def setUp(self):
