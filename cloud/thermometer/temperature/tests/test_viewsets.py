@@ -161,3 +161,33 @@ class TemperatureReadingViewsetTests(APITestCase):
         self.assertEquals(response.status_code, 405)
         self.assertEquals(str(response.data['detail']), 'Method "POST" not allowed.')
 
+    def test_authenticated_put(self):
+        """
+        Put reqeusts should not be allowed
+        """
+        temp = TemperatureReading(degrees_c=1, thermometer=self.thermometer)
+        with transaction.atomic():
+            temp.save()
+        url = reverse('temperaturereading-detail', args=[temp.pk])
+        data = {'degrees_c': 2}
+
+        request = self.factory.put(url, data=data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.detailview(request)
+        self.assertEquals(response.status_code, 405)
+        self.assertEquals(str(response.data['detail']), 'Method "PUT" not allowed.')
+
+    def test_authenticated_delete(self):
+        """
+        Delete requests should not be allowed
+        """
+        temp = TemperatureReading(degrees_c=1, thermometer=self.thermometer)
+        with transaction.atomic():
+            temp.save()
+        url = reverse('temperaturereading-detail', args=[temp.pk])
+        request = self.factory.delete(url, args=[temp.pk])
+        force_authenticate(request, self.user)
+        response = self.detailview(request, pk=temp.pk)
+        self.assertEquals(response.status_code, 405)
+        self.assertEquals(str(response.data['detail']), 'Method "DELETE" not allowed.')
+
