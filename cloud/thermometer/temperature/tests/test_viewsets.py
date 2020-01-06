@@ -140,5 +140,19 @@ class TemperatureReadingViewsetTests(APITestCase):
         force_authenticate(request, user=superuser)
         response = self.listview(request)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.data), len(TemperatureReading.objects.all()))
+        self.assertEquals(len(response.data), 11)
+
+    def test_authenticated_post(self):
+        """
+        post to temperature reading viewset should not create new readings.
+        """
+        url = reverse('temperaturereading-list')
+        data = {
+            'degrees_c': 1,
+        }
+        request = self.factory.post(url, data=data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 405)
+        self.assertEquals(str(response.data['detail']), 'Method "POST" not allowed.')
 
