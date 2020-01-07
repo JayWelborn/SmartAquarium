@@ -23,6 +23,9 @@ class IsOwnerOrStaff(permissions.BasePermission):
     Custom permission to only allow owners of an object or staff to view an object.
     """
 
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
     def has_object_permission(self, request, view, obj):
         # Only owners and staff can view an object
         return obj.owner == request.user or request.user.is_staff

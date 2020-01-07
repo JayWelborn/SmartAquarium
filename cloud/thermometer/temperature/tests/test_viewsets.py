@@ -191,3 +191,90 @@ class TemperatureReadingViewsetTests(APITestCase):
         self.assertEquals(response.status_code, 405)
         self.assertEquals(str(response.data['detail']), 'Method "DELETE" not allowed.')
 
+
+
+class ThermometerViewsetTests(APITestCase):
+    """Tests for Thermometer Viewset
+
+    Methods:
+        setUp: Create test data
+        tearDown: Empty test database
+        test_unauthenticated_requests: All unauthenticated requests should fail
+    """
+
+    def setUp(self):
+        """
+        create test data
+        """
+        self.normal_user = get_user_model().objects.create_user(
+            username='normal',
+            password='user',
+            email='normal@user.com'
+        )
+        self.super_user = get_user_model().objects.create_superuser(
+            username='super',
+            password='user',
+            email='super@user.com'
+        )
+        self.therm = Thermometer(display_name='test thermometer')
+        self.therm.register(self.normal_user)
+        self.factory = APIRequestFactory()
+        self.listview = ThermometerViewset.as_view({
+            'get': 'list',
+            'post': 'create'
+        })
+        self.detailview = ThermometerViewset.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })
+    
+    def tearDown(self):
+        """
+        empty test database
+        """
+        with transaction.atomic():
+            for user in get_user_model().objects.all():
+                user.delete()
+        
+        self.assertEquals(len(get_user_model().objects.all()), 0)
+        self.assertEquals(len(Thermometer.objects.all()), 0)
+        self.assertEquals(len(TemperatureReading.objects.all()), 0)
+
+    def test_unauthenticated_requests(self):
+        """
+        This viewset should reject all unauthenticated requests
+        """
+        self.client.logout()
+
+        # ListView requests
+        url = reverse('thermometer-list')
+        request = self.factory.get(url)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 403)
+
+        data = {'display_name': 'fred'}
+        requet = self.factory.post(url, data)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 403)
+
+        # DetailView requests
+        url = reverse('thermometer-detail', args=[self.therm.pk])
+        request = self.factory.get(url)
+        response = self.detailview(request, pk=self.therm.pk)
+        self.assertEquals(response.status_code, 403)
+    
+        data = {'display_name': 'forky'}
+        request = self.factory.patch(url, data=data, partial=True)
+        response = self.detailview(request)
+        self.assertEquals(response.status_code, 403)
+
+        data['therm_id'] = 'sausage'
+        request = self.factory.put(url, pk=self.therm.pk, data=data)
+        response = self.detailview(request)
+        self.assertEquals(response.status_code, 403)
+
+        request = self.factory.delete(url, pk=self.therm.pk)
+        response = self.detailview(request)
+        self.assertEquals(response.status_code, 403)
