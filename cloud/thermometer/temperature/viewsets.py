@@ -19,6 +19,15 @@ class ThermometerViewset(viewsets.ModelViewSet):
     serializer_class = ThermometerSerializer
     permission_classes = (IsOwnerOrStaff,)
 
+    def get_queryset(self):
+        """
+        If current user is staff, return all thermometers. Otherwise return the thermometers owned
+        ther current user.
+        """
+        if self.request.user.is_staff:
+            return Thermometer.objects.all()
+        return Thermometer.objects.filter(owner=self.request.user)
+
 
 class TemperatureReadingViewset(mixins.ListModelMixin,
                                 mixins.RetrieveModelMixin,

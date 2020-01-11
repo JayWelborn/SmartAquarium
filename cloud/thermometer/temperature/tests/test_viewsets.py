@@ -200,6 +200,8 @@ class ThermometerViewsetTests(APITestCase):
         setUp: Create test data
         tearDown: Empty test database
         test_unauthenticated_requests: All unauthenticated requests should fail
+        test_authenticated_get: Regular users should be able to see only their own thermometers.
+            Staff should see all thermometers
     """
 
     def setUp(self):
@@ -278,3 +280,58 @@ class ThermometerViewsetTests(APITestCase):
         request = self.factory.delete(url, pk=self.therm.pk)
         response = self.detailview(request)
         self.assertEquals(response.status_code, 403)
+
+    def test_authenticated_get(self):
+        """
+        Regular users should be able to see their own thermometers
+        Staff should be able to see all thermometers
+        """
+        other_user = get_user_model().objects.create_user(
+            username="other",
+            password="otherpass",
+            email="e@mail.mil"
+        )
+        normal_user_therms = []
+        for i in range(4):
+            therm = Thermometer()
+            therm.register(self.normal_user)
+            normal_user_therms.append(therm)
+        
+        other_user_therms = []
+        for i in range(4):
+            therm = Thermometer()
+            therm.register(other_user)
+            other_user_therms = []
+
+        normal_user_therms.append(self.therm)
+
+        # Test list view
+        url = reverse('thermometer-list')
+        request = self.factory.get(url)
+        force_authenticate(request, user=self.normal_user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), 5)
+        for therm_data in response.data:
+            therm = Thermometer.objects.get(therm_id=therm_data['therm_id'])
+            self.assertIn(therm, normal_user_therms)
+
+        request = self.factory.get(url)
+        force_authenticate(request, user=self.super_user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), 9)
+
+        # Test detail view
+        url = reverse('thermometer-detail', args=[self.therm.pk])
+        request = self.factory.get(url)
+        force_authenticate(request, self.normal_user)
+        response = self.detailview(request, pk=self.therm.pk)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.data['owner'][-2], str(self.normal_user.pk))
+
+        request = self.factory.get(url)
+        force_authenticate(request, self.super_user)
+        response = self.detailview(request, pk=self.therm.pk)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.data['owner'][-2], str(self.normal_user.pk))
