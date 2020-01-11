@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.urls import reverse
@@ -192,7 +194,6 @@ class TemperatureReadingViewsetTests(APITestCase):
         self.assertEquals(str(response.data['detail']), 'Method "DELETE" not allowed.')
 
 
-
 class ThermometerViewsetTests(APITestCase):
     """Tests for Thermometer Viewset
 
@@ -202,6 +203,8 @@ class ThermometerViewsetTests(APITestCase):
         test_unauthenticated_requests: All unauthenticated requests should fail
         test_authenticated_get: Regular users should be able to see only their own thermometers.
             Staff should see all thermometers
+        test_authenticated_post: POST requests should create a new thermometer record registered to
+            the authenticated user
     """
 
     def setUp(self):
@@ -335,3 +338,28 @@ class ThermometerViewsetTests(APITestCase):
         response = self.detailview(request, pk=self.therm.pk)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.data['owner'][-2], str(self.normal_user.pk))
+
+    def test_authenticated_post(self):
+        """
+        POST requests should create a new thermometer registered to the current user
+        """
+        data = {
+            'display_name': 'new thermometer'
+        }
+        url = reverse('thermometer-list')
+        request = self.factory.post(url, data=data, format='json')
+        force_authenticate(request, user=self.normal_user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(int(response.data['owner'][-2]), self.normal_user.pk)
+        self.assertEquals(response.data['display_name'], data['display_name'])
+
+        data = {
+            'display_name': 'newer thermometer'
+        }
+        request = self.factory.post(url, data=data, format='json')
+        force_authenticate(request, user=self.super_user)
+        response = self.listview(request)
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(int(response.data['owner'][-2]), self.super_user.pk)
+        self.assertEquals(response.data['display_name'], data['display_name'])

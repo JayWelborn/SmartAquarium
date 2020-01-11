@@ -1,3 +1,4 @@
+import datetime
 from random import randint
 import uuid
 
@@ -40,7 +41,7 @@ class Thermometer(models.Model):
     )
     therm_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     display_name = models.CharField(max_length=75, default=get_random_name)
-    created_date = models.DateField(default=timezone.now)
+    created_date = models.DateField(default=datetime.date.today)
     registered = models.BooleanField(default=False)
     registration_date = models.DateField(blank=True, null=True)
 
@@ -52,7 +53,7 @@ class Thermometer(models.Model):
         if not self.registered:
             self.owner = owner
             self.registered = True
-            self.registration_date = timezone.now()
+            self.registration_date = datetime.date.today()
             with transaction.atomic():
                 self.save()
         else:

@@ -11,11 +11,14 @@ class ThermometerViewset(viewsets.ModelViewSet):
     """Viewset for Thermometers
 
     Fields:
-        queryset: List of thermometers ordered by created date
         serializer_class: Serializer used to convert thermometer to JSON
         permission_classes: restrictions on who can access which http methods
+
+    Methods:
+        get_queryset: Return all records if user is staff, otherwise the records associated with the
+            current user
+        create: Create a new thermometer record and register it to the currently authenticated user
     """
-    queryset = Thermometer.objects.all()
     serializer_class = ThermometerSerializer
     permission_classes = (IsOwnerOrStaff,)
 
@@ -27,6 +30,13 @@ class ThermometerViewset(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return Thermometer.objects.all()
         return Thermometer.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        """
+        Create a new thermometer record registered to the authenticated user
+        """
+        thermometer = serializer.save()
+        thermometer.register(self.request.user)
 
 
 class TemperatureReadingViewset(mixins.ListModelMixin,

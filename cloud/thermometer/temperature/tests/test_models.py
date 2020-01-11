@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
@@ -57,7 +57,7 @@ class ThermometerModelTests(TestCase):
         self.assertFalse(therm.registered)
         self.assertIsNone(therm.registration_date)
         self.assertEquals(therm.display_name, "test thermometer")
-        self.assertEquals(therm.created_date.date(), datetime.utcnow().date())
+        self.assertEquals(therm.created_date, datetime.date.today())
         self.assertIsNone(therm.owner)
     
     def test_duplicate_id_rejected(self):
@@ -91,7 +91,7 @@ class ThermometerModelTests(TestCase):
         therm.register(self.user)
         self.assertIs(self.user, therm.owner)
         self.assertTrue(therm.registered)
-        self.assertEquals(therm.registration_date.date(), datetime.utcnow().date())
+        self.assertEquals(therm.registration_date, datetime.date.today())
 
         other_user = get_user_model().objects.create_user(
             username="testerson",
