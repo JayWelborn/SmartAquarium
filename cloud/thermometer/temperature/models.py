@@ -39,7 +39,7 @@ class Thermometer(models.Model):
         blank=True,
         null=True
     )
-    therm_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    therm_id = models.UUIDField(default=uuid.uuid4, unique=True)
     display_name = models.CharField(max_length=75, default=get_random_name)
     created_date = models.DateField(default=datetime.date.today)
     registered = models.BooleanField(default=False)
@@ -72,9 +72,6 @@ class TemperatureReading(models.Model):
 
     Methods:
         convert_to_farenheit: Convert this temperature reading to F
-
-    References:
-
     """
     
     thermometer = models.ForeignKey(
@@ -87,9 +84,3 @@ class TemperatureReading(models.Model):
         max_digits=10
     )
     time_recorded = models.DateTimeField(default=timezone.now)
-
-    def get_fahrenheit(self):
-        """
-        Convert temperature to Fahrenheit 
-        """
-        return self.degrees_c * 1.8 + 32

@@ -168,38 +168,3 @@ class TemperatureReadingModelTests(TestCase):
             )
             temp.save()
         self.assertEquals(len(self.thermometer.temperatures.all()), 1000)
-
-    def test_temperature_conversion(self):
-        """
-        get_fahrenheit should accurately convert temperatures
-        """
-
-        temp = TemperatureReading(
-            thermometer=self.thermometer,
-            degrees_c=-40
-        )
-        self.assertEquals(temp.degrees_c, temp.get_fahrenheit())
-
-        temp = TemperatureReading(
-            thermometer=self.thermometer,
-            degrees_c=-50
-        )
-        self.assertEquals(temp.get_fahrenheit(), -58.0)
-
-        temp = TemperatureReading(
-            thermometer=self.thermometer,
-            degrees_c=0
-        )
-        self.assertEquals(temp.get_fahrenheit(), 32)
-
-        temp = TemperatureReading(
-            thermometer=self.thermometer,
-            degrees_c=1
-        )
-        self.assertEquals(temp.get_fahrenheit(), 33.8)
-
-        temp = TemperatureReading(
-            thermometer=self.thermometer,
-            degrees_c=37
-        )
-        self.assertAlmostEqual(temp.get_fahrenheit(), 98.6)

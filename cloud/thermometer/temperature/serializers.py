@@ -39,6 +39,7 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
     Fields:
         temperatures: Temperature readings associated with this thermometer
         owner: User who owns this thermometer
+        allowed_on_post: Fields that can be set via the API in new object creation
     
     Metaclass Fields:
         model: Model to be serialized
@@ -55,11 +56,13 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         many=True, read_only=False, required=False, allow_null=True)
     owner = serializers.HyperlinkedRelatedField(
         many=False, view_name='user-detail', read_only=True)
+    allowed_on_post = set(('therm_id', 'display_name'))
 
     class Meta:
         model = Thermometer
-        fields = ('url', 'owner', 'temperatures', 'therm_id', 'display_name', 'created_date', 'registered', 'registration_date')
-        read_only_fields = ('therm_id', 'owner', 'created_date', 'registration_date', 'registered')
+        fields = ('url', 'owner', 'temperatures', 'therm_id',
+                  'display_name', 'created_date', 'registered', 'registration_date')
+        read_only_fields = ('owner', 'created_date', 'registration_date', 'registered')
     
     def create(self, validated_data):
         """
@@ -68,8 +71,10 @@ class ThermometerSerializer(serializers.HyperlinkedModelSerializer):
         error.
         """
         thermometer = Thermometer.objects.create()
-        if 'display_name' in validated_data:
-            thermometer.display_name = validated_data['display_name']
+        
+        for key, value in validated_data.items():
+            if key in self.allowed_on_post:
+                setattr(thermometer, key, value)
         
         with transaction.atomic():
             thermometer.save()
