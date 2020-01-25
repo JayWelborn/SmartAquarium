@@ -33,5 +33,8 @@ module.exports = {
         to: './assets',
       }
     ])
-  ]
+  ],
+  devServer: {
+    historyApiFallback: true
+  }
 }
