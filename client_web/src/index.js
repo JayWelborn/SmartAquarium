@@ -7,6 +7,7 @@ import thermometer from './redux/reducers';
 import {loadState, saveState} from './utils/localStorage';
 
 import App from './App';
+import './style.scss';
 
 
 const persistedState = loadState();

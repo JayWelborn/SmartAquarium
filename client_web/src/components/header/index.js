@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavItem, } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import LoginContainer from './LoginContainer'
@@ -11,14 +10,15 @@ import LoginContainer from './LoginContainer'
 export default class Header extends Component {
   render() {
     return (
-      <Navbar fluid collapseOnSelect bg='light'>
+      <Navbar fluid collapseOnSelect expand='md' bg='light'>
         <LinkContainer to='/'>
           <Navbar.Brand>
             <img style={{ height: "50px" }} src="/assets/images/wordmark.svg" alt="" />
           </Navbar.Brand>
         </LinkContainer>
+        <Navbar.Toggle aria-controls='basic-navbar-nav' />
         <Navbar.Collapse>
-          <Nav variant='tabs'>
+          <Nav>
             <LinkContainer exact to='/'>
               <Nav.Link eventKey={1}>
                 Home
