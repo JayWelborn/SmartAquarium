@@ -1,0 +1,22 @@
+html {
+  height: 100%;
+  overflow-y: scroll;
+  font-size: 100%;
+}
+
+body {
+  background-color: $light-shade;
+  color: $dark-shade;
+}
+
+a {
+color: $main;
+text-decoration: none;
+transition: .15s linear;
+
+&:hover {
+  color: $light-accent;
+  transition: .15s linear;
+  text-decoration: none;
+}
+}

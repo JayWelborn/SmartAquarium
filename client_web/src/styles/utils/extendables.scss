@@ -1,0 +1,11 @@
+%shadow{
+  box-shadow: 5px 5px 10px 5px $shadow;
+}
+
+%card-base{
+  @extend %shadow;
+  border-radius: 5px;
+  padding: 30px;
+  display: block;
+  margin-bottom: 5px;
+}
