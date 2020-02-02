@@ -21,6 +21,35 @@ function mapStateToProps(state) {
  * Page header. Displays a Bootstrap navbar and login/logout buttons
  */
 function Header(props) {
+  let navLinks;
+  if (props.userLoggedIn) {
+    navLinks = [
+      <LinkContainer exact to='/thermometers'>
+        <Nav.Link eventKey={3}>
+          My Thermometers
+        </Nav.Link>
+      </LinkContainer>,
+      <LinkContainer exact to='/new-thermometer'>
+        <Nav.Link eventKey={4}>
+          New Thermometers
+        </Nav.Link>
+      </LinkContainer>
+    ];
+  } else {
+    navLinks = [
+      <LinkContainer exact to='/login'>
+        <Nav.Link eventKey={3}>
+          Log In
+        </Nav.Link>
+      </LinkContainer>,
+      <LinkContainer exact to='/register'>
+        <Nav.Link eventKey={4}>
+          Register
+        </Nav.Link>
+      </LinkContainer>
+    ];
+  }
+
   return (
     <Navbar collapseOnSelect expand='md' bg='light'>
       <LinkContainer to='/'>
@@ -41,6 +70,7 @@ function Header(props) {
               About
             </Nav.Link>
           </LinkContainer>
+          {navLinks}
         </Nav>
         {/* Pull Right items */}
         <Nav>
