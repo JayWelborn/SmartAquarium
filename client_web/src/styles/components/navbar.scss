@@ -2,6 +2,10 @@
   @extend %shadow;
   margin-bottom: 10px;
 
+  .nav-link.active {
+    font-weight: 500;
+  }
+
   form {
     display: flex;
     align-items: center;

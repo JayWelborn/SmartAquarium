@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import { Navbar, Nav, NavItem, } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -20,67 +20,70 @@ function mapStateToProps(state) {
 /**
  * Page header. Displays a Bootstrap navbar and login/logout buttons
  */
-function Header(props) {
-  let navLinks;
-  if (props.userLoggedIn) {
-    navLinks = [
-      <LinkContainer exact to='/thermometers'>
-        <Nav.Link eventKey={3}>
-          My Thermometers
-        </Nav.Link>
-      </LinkContainer>,
-      <LinkContainer exact to='/new-thermometer'>
-        <Nav.Link eventKey={4}>
-          New Thermometers
-        </Nav.Link>
-      </LinkContainer>
-    ];
-  } else {
-    navLinks = [
-      <LinkContainer exact to='/login'>
-        <Nav.Link eventKey={3}>
-          Log In
-        </Nav.Link>
-      </LinkContainer>,
-      <LinkContainer exact to='/register'>
-        <Nav.Link eventKey={4}>
-          Register
-        </Nav.Link>
-      </LinkContainer>
-    ];
+class Header extends Component {
+  render() {
+    let navLinks;
+    if (this.props.userLoggedIn) {
+      navLinks = [
+        <LinkContainer key={1} exact to='/thermometers'>
+          <Nav.Link active={false}>
+            My Thermometers
+          </Nav.Link>
+        </LinkContainer>,
+        <LinkContainer key={2} exact to='/new-thermometer'>
+          <Nav.Link active={false}>
+            New Thermometers
+          </Nav.Link>
+        </LinkContainer>
+      ];
+    } else {
+      navLinks = [
+        <LinkContainer key={1} exact to='/login'>
+          <Nav.Link active={false}>
+            Log In
+          </Nav.Link>
+        </LinkContainer>,
+        <LinkContainer key={2} exact to='/register'>
+          <Nav.Link active={false}>
+            Register
+          </Nav.Link>
+        </LinkContainer>
+      ];
+    }
+
+    return (
+      <Navbar collapseOnSelect expand='md' bg='light'>
+        <LinkContainer exact to='/'>
+          <Nav.Link active={false}>
+            <Navbar.Brand>
+              <img style={{ height: "50px" }} src="/assets/images/wordmark.svg" alt="" />
+            </Navbar.Brand>
+          </Nav.Link>
+        </LinkContainer>
+        <Navbar.Toggle aria-controls='basic-navbar-nav' />
+        <Navbar.Collapse>
+          <Nav className='mr-auto'>
+            <LinkContainer exact to='/'>
+              <Nav.Link active={false}>
+                Home
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer exact to='/about'>
+              <Nav.Link active={false}>
+                About
+              </Nav.Link>
+            </LinkContainer>
+            {navLinks}
+          </Nav>
+          {/* Pull Right items */}
+          <Nav>
+            <NavItem>
+              <LoginContainer/>
+            </NavItem>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    );
   }
-
-  return (
-    <Navbar collapseOnSelect expand='md' bg='light'>
-      <LinkContainer to='/'>
-        <Navbar.Brand>
-          <img style={{ height: "50px" }} src="/assets/images/wordmark.svg" alt="" />
-        </Navbar.Brand>
-      </LinkContainer>
-      <Navbar.Toggle aria-controls='basic-navbar-nav' />
-      <Navbar.Collapse>
-        <Nav className='mr-auto'>
-          <LinkContainer exact to='/'>
-            <Nav.Link eventKey={1}>
-              Home
-            </Nav.Link>
-          </LinkContainer>
-          <LinkContainer exact to='/about'>
-            <Nav.Link eventKey={2}>
-              About
-            </Nav.Link>
-          </LinkContainer>
-          {navLinks}
-        </Nav>
-        {/* Pull Right items */}
-        <Nav>
-          <NavItem>
-            <LoginContainer/>
-          </NavItem>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  );
 }
-
 export default connect(mapStateToProps)(Header)

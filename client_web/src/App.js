@@ -1,6 +1,7 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {LinkContainer} from 'react-router-bootstrap';
 import {BrowserRouter} from 'react-router-dom';
-import { connect } from 'react-redux';
 
 import Header from './components/header';
 import Main from './components/Main.js';
