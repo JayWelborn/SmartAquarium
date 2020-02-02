@@ -1,0 +1,10 @@
+input {
+  font-family: 'Quicksand', sans-serif;
+  @include font-scale($scale, 0);
+  
+  &[type=text],
+  &[type=password] {
+    @extend %round-border;
+    padding: 2px 8px;
+  }
+}

@@ -1,8 +1,10 @@
 import React from 'react';
 import {Switch, Route} from 'react-router-dom';
 
+import about from './home/about';
 import home from './home';
-import about from './about';
+import login from './registration/login';
+import register from './registration/register';
 
 
 export default function Main(props) {
@@ -10,6 +12,8 @@ export default function Main(props) {
     <Switch>
       <Route exact path='/' component={home} />
       <Route path='/about' component={about} />
+      <Route path='/login' component={login} />
+      <Route path='/register' component={register} />
     </Switch>
   );
 };

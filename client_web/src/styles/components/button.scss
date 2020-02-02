@@ -1,0 +1,8 @@
+.btn {
+  @extend %round-border;
+
+  &.btn-primary {
+    background-color: $primary;
+    border-color: $primary;
+  }
+}
