@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {LinkContainer} from 'react-router-bootstrap';
 import {BrowserRouter} from 'react-router-dom';
 
 import Header from './components/header';

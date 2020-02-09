@@ -24,6 +24,12 @@
   }
 }
 
+@mixin bp-xs {
+  @media (max-width: $breakpoint-xs) {
+    @content;
+  }
+}
+
 @mixin font-scale($scale, $exp) {
 
   font-size: exponent($scale, $exp) + em;

@@ -1,16 +1,18 @@
 import React from 'react';
 
-export default function home(props) {
+import {Button, Jumbotron} from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
+
+
+export default function Home(props) {
   return(
-    <div>
-      <h1>Heading 1</h1>
-      <h2>Heading 2</h2>
-      <h3>Heading 3</h3>
-      <h4>Heading 4</h4>
-      <h5>Heading 5</h5>
-      <p>
-        This is a paragraph of normal text.
-      </p>
+    <div className='home'>
+      <Jumbotron fluid>
+        <img class='logo' src='/assets/images/logo/white-on-transparent.svg' alt='Thermometer Logo'/>
+        <h1>Aquatherm</h1>
+        <h3>Healthy Fish Make Happy Fish</h3>
+
+      </Jumbotron>
     </div>
   );
 };

@@ -1,0 +1,60 @@
+.jumbotron {
+  background-image: url('/assets/images/header.jpg');
+  background-size: cover;
+  height: calc(100vh - 76px);
+  color: $light-shade;
+  margin: 0px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  & > * {
+    @extend %heavy-drop-shadow;
+  }
+
+  .logo {
+    height: 195px;
+    margin-bottom: $jumbotron-gutter;
+    @include bp-large {
+      height: 151px;
+    }
+    @include bp-medium {
+      height: 115px;
+    }
+    @include bp-small {
+      height: 94px;
+    }
+  }
+
+  h1 {
+    font-size: 108px;
+    margin-bottom: $jumbotron-gutter;
+    @include bp-large {
+      font-size: 84px;
+    }
+    @include bp-medium {
+      font-size: 64px;
+    }
+    @include bp-small {
+      font-size: 52px;
+    }
+  }
+
+  h3 {
+    font-size: 71px;
+    @include bp-large {
+      font-size: 55px;
+    }
+    @include bp-medium {
+      font-size: 42px;
+    }
+    @include bp-small {
+      font-size: 34px;
+    }
+    @include bp-xs {
+      font-size: 28px
+    }
+  }
+}

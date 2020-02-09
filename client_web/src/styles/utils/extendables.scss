@@ -2,6 +2,14 @@
   box-shadow: 5px 5px 10px $shadow;
 }
 
+%drop-shadow {
+  filter: drop-shadow(5px 5px 10px $shadow)
+}
+
+%heavy-drop-shadow {
+  filter: drop-shadow(5px 5px 10px $heavy-shadow)
+}
+
 %card-base{
   @extend %shadow;
   border-radius: 5px;

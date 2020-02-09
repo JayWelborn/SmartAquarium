@@ -56,7 +56,7 @@ class Header extends Component {
         <LinkContainer exact to='/'>
           <Nav.Link active={false}>
             <Navbar.Brand>
-              <img style={{ height: "50px" }} src="/assets/images/wordmark.svg" alt="" />
+              <img style={{ height: "40px" }} src="/assets/images/wordmark.svg" alt="" />
             </Navbar.Brand>
           </Nav.Link>
         </LinkContainer>
