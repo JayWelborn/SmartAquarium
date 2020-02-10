@@ -1,8 +1,26 @@
-.btn {
-  @extend %round-border;
+.root {
+  .btn {
+    @extend %round-border;
+  }
 
-  &.btn-primary {
-    background-color: $primary;
-    border-color: $primary;
+  .call-to-action {
+    background-color: $dark-accent;
+    border-color: $dark-accent;
+
+    &:not(:disabled):not(.disabled) {
+      &:hover {
+        background-color: darken($color: $dark-accent, $amount: 6%);
+        border-color: darken($color: $dark-accent, $amount: 6%);
+      }
+      &:active, &:focus, &:active:focus {
+        box-shadow: 0 0 0 0.2rem rgba(lighten($dark-accent, 12%), .5);
+        background-color: darken($color: $dark-accent, $amount: 10%);
+        border-color: darken($color: $dark-accent, $amount: 10%);
+      }
+      &:focus {
+        background-color: darken($color: $dark-accent, $amount: 6%);
+        border-color: darken($color: $dark-accent, $amount: 6%);
+      }
+    }
   }
 }

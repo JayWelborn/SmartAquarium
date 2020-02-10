@@ -57,4 +57,11 @@
       font-size: 28px
     }
   }
+
+  .btn {
+    font-size: 28px;
+    &:nth-child(2) {
+      margin-left: $jumbotron-gutter;
+    }
+  }
 }

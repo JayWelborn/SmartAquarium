@@ -6,12 +6,16 @@ $dark-accent: #c84630;
 $dark-shade: #08415c;
 
 /* Colormind semantic colors */
-$primary: #1ea3ea;
-$info: #08405c;
-$success: #3eab6c;
-$warning: #bc9b34;
-$danger: #f44336;
-$default: #999999;
+
 
 $shadow: rgba(0,0,0,.18);
 $heavy-shadow: rgba(0,0,0,0.75);
+
+$theme-colors: (
+  primary: #1ea3ea,
+  info: #08405c,
+  success: #3eab6c,
+  warning: #bc9b34,
+  danger: #f44336,
+  default: #999999,
+);
