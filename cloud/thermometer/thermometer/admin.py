@@ -8,6 +8,9 @@ from auth_extension.models import UserProfile
 from temperature.admin import ThermometerAdmin
 from temperature.models import Thermometer
 
+from testimonials.admin import TestimonialAdmin
+from testimonials.models import Testimonial
+
 
 class CustomAdmin(AdminSite):
     """Admin site with customized header
@@ -25,3 +28,4 @@ admin_site.register(get_user_model())
 admin_site.register(Group)
 admin_site.register(UserProfile, UserProfileAdmin)
 admin_site.register(Thermometer, ThermometerAdmin)
+admin_site.register(Testimonial, TestimonialAdmin)
