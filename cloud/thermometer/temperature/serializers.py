@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .exceptions import ThermometerCreationError
 from .models import Thermometer, TemperatureReading
 
+
 class TemperatureReadingSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer to convert Temperature readings to JSON
 

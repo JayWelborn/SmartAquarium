@@ -137,7 +137,9 @@ class ThermometerSerializerTests(APITestCase):
         setUp: create test data
         tearDown: clean test database
         create_valid_data: Serializer should accept valid data to create new thermometer
-
+        create_invalid_data: Serializer should reject invalid data
+        update_add_temperatures: Passing new temperatures to a serializer with an existing instance
+            should create new corresponding temperature records
     """
 
     def setUp(self):

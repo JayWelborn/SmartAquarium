@@ -22,4 +22,4 @@ class Testimonial(models.Model):
         default=timezone.now
     )
 
-    text = models.TextField()
+    text = models.TextField(blank=False, null=False)

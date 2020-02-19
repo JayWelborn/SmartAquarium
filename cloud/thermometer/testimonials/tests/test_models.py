@@ -20,7 +20,7 @@ class TestimonialModelTests(TestCase):
             password='passy',
             email='e@mai.lcom'
         )
-        self.today = timezone.now().date()
+        self.today = timezone.now()
 
     def tearDown(self):
         for user in self.UserModel.objects.all():
@@ -37,11 +37,11 @@ class TestimonialModelTests(TestCase):
         mony = Testimonial(user=self.test_user)
         with transaction.atomic():
             mony.save()
-        self.assertEqual(self.today, mony.submission_date.date())
+        self.assertEqual(self.today.date(), mony.submission_date.date())
 
         yesterday = self.today - datetime.timedelta(days=1)
         mony = Testimonial(user=self.test_user, submission_date=yesterday)
         with transaction.atomic():
             mony.save()
-        self.assertEqual(mony.submission_date, yesterday)
+        self.assertEqual(mony.submission_date.date(), yesterday.date())
   
