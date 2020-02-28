@@ -19,11 +19,13 @@ from .routers import ROUTER
 
 from temperature import viewsets as temp_vs
 from auth_extension import viewsets as auth_vs
+from testimonials import viewsets as test_vs
 
 ROUTER.register('users', auth_vs.UserViewset)
 ROUTER.register('profiles', auth_vs.UserProfileViewset)
 ROUTER.register('thermometers', temp_vs.ThermometerViewset, basename='thermometer')
 ROUTER.register('temperatures', temp_vs.TemperatureReadingViewset, basename='temperaturereading')
+ROUTER.register('testimonials', test_vs.TestimonialViewset)
 
 urlpatterns = [
     path('admin/', admin_site.urls),

@@ -19,3 +19,4 @@ class TestimonialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Testimonial
         fields = ('user', 'submission_date', 'text')
+        read_only_fields = ('submission_date',)

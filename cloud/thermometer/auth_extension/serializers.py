@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from .fields import TimeZoneField
 from .models import UserProfile
 
 
@@ -85,6 +86,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     user = serializers.HyperlinkedRelatedField(
         many=False, view_name='user-detail', read_only=True)
+    time_zone = TimeZoneField()
 
     class Meta:
         model = UserProfile
