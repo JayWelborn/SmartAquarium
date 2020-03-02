@@ -1,0 +1,24 @@
+.info-panels {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  max-width: 1260px;
+  margin: 0px auto;
+
+  .info-panel {
+    display: flex;
+    flex-flow: column nowrap;
+    max-width: 300px;
+    align-items: center;
+    margin: 10px;
+
+    img {
+      @extend %drop-shadow;
+      height: 165px;
+    }
+
+    h3 {
+      margin: 25px 0 10px 0;
+    }
+  }
+}
