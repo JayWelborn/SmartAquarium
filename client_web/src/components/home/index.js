@@ -55,6 +55,23 @@ export default function Home(props) {
       <section className='info-panels'>
         {panelComponents}
       </section>
+      <section className='inverted'>
+        <div className='detail-info'>
+          <img src='/assets/images/thermometer.jpg' alt='thermometer' />
+          <div className='detail-info-text'>
+            <h3>This is What it Looks Like</h3>
+            <p>
+              Once one of these actually exists, this is where I'd put a picture of it.
+              If you've read this far, you deserve to see it. I think also there should be
+              a paragraph here with as few words as possible explaining how it works right here.
+            </p>
+            <p>
+              Here will be the tech specs, weight, height, and that junk. Right now we're just
+              filling space for reference.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

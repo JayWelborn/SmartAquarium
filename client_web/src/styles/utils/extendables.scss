@@ -21,3 +21,14 @@
 %round-border {
   border-radius: 999999px;
 }
+
+%home-section {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 1260px;
+  margin: 0px auto;
+  min-height: 60vh;
+  padding: 15px 0 15px 0;
+}

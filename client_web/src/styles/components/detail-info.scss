@@ -1,0 +1,14 @@
+.detail-info {
+  @extend %home-section;
+
+  img {
+    @extend %drop-shadow; 
+    display: block;
+    height: 300px;
+    border-radius: 3px;
+  }
+
+  .detail-info-text {
+    max-width: 720px
+  }
+}

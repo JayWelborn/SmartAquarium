@@ -3,7 +3,7 @@
   background-size: cover;
   height: calc(100vh - 76px);
   color: $light-shade;
-  margin: 0px;
+  margin: 0px !important;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
