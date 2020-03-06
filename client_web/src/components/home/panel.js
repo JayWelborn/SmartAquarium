@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function Panel(props) {
-  console.log(props);
   return(
     <div className='info-panel'>
       <img src={props.url} alt={props.header} />

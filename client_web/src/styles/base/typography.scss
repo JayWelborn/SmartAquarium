@@ -36,3 +36,10 @@ $scale: 1.25;
     @include font-scale($scale, 1);
   }
 }
+
+@font-face{
+  font-family:"revicons";
+  fallback:fallback;
+  src:url("/assets/fonts/revicons.woff") format('woff'),
+      url("/assets/fonts/revicons.ttf") format('ttf'),
+      url("/assets/fonts/revicons.eot") format('ttf')}

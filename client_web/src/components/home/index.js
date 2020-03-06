@@ -4,6 +4,7 @@ import {Button, Jumbotron} from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
 
 import Panel from './panel';
+import TestimonialCarousel from './testimonialCarousel';
 
 
 export default function Home(props) {
@@ -72,6 +73,7 @@ export default function Home(props) {
           </div>
         </div>
       </section>
+      <TestimonialCarousel />
     </div>
   );
 };
