@@ -1,24 +1,55 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
+import {apiRoot, apiCall} from '../../utils/api';
 
-export default function TestimonialCarousel() {
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
+
+export default class TestimonialCarousel extends Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+    };
+  }
+
+  componentDidMount() {
+    let url = apiRoot + 'testimonials.json'
+    let method = 'get'
+
+    apiCall(url, method).then(testimonialData => {
+      for (let i = 0; i < testimonialData.length; i++) {
+        apiCall(testimonialData[i].user, method).then(userData => {
+          testimonialData[i].user = userData;
+          apiCall(userData.profile, method).then(profileData => {
+            testimonialData[i].profile = profileData;
+          });
+        });
+      }
+      this.setState({testimonials: testimonialData})
+    });
+  }
+
+  render() {
+    const responsive = {
+      desktop: {
+        breakpoint: { max: 3000, min: 1024 },
+        items: 3,
+      },
+      tablet: {
+        breakpoint: { max: 1024, min: 464 },
+        items: 2,
+      },
+      mobile: {
+        breakpoint: { max: 464, min: 0 },
+        items: 1,
+      },
+    };
+
+  let testimonials = this.state.testimonials;
+
   return (
     <section className='testimonial-carousel'>
       <Carousel
@@ -39,10 +70,16 @@ export default function TestimonialCarousel() {
         renderDotsOutside
         responsive={responsive}
       >
-        <img src='/assets/images/originals/Fish_Dark.svg' />
-        <img src='/assets/images/originals/Water_Dark.svg' />
-        <img src='/assets/images/originals/SmartPhone_Dark.svg' />
+        {
+          testimonials ?
+          testimonials.map((testimonial, i) => 
+            <p>{testimonial.text}</p>
+          )
+          :
+          <p>loading...</p>
+      }
       </Carousel>
     </section>
   )
+  }
 }
