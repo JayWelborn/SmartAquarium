@@ -90,7 +90,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('url', 'user', 'created_date', 'time_zone')
+        fields = ('url', 'user', 'created_date', 'time_zone', 'picture')
         extra_kwargs = {
             'slug': {'read_only': True},
         }

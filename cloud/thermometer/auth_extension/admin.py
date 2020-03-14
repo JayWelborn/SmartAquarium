@@ -18,7 +18,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     fieldsets = (
         ('User', {'fields': ('user',)},),
         ('Profile Information', {
-            'fields': ('created_date', 'time_zone')})
+            'fields': ('created_date', 'time_zone', 'picture')})
     )
     list_display = ('user', 'time_zone', 'created_date')
     list_filter = ('created_date', 'time_zone')

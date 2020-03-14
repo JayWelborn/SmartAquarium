@@ -28,6 +28,7 @@ export default class TestimonialCarousel extends Component {
           });
         });
       }
+      console.log(testimonialData);
       this.setState({testimonials: testimonialData})
     });
   }

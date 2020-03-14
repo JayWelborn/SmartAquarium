@@ -39,6 +39,11 @@ class UserProfile(models.Model):
 
     time_zone = TimeZoneField(default='UTC')
 
+    picture = models.ImageField(
+        upload_to='profile_images',
+        blank=True
+    )
+
 
 @receiver(post_save, sender=get_user_model())
 def create_user_profile(sender, instance, created, **kwargs):
