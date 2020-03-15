@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
+import TestimonialTile from './testimonialTile';
 import {apiRoot, apiCall} from '../../utils/api';
 
 
@@ -11,30 +12,7 @@ export default class TestimonialCarousel extends Component {
   constructor(props){
     super(props);
 
-    this.state = {
-    };
-  }
-
-  componentDidMount() {
-    let url = apiRoot + 'testimonials.json'
-    let method = 'get'
-
-    apiCall(url, method).then(testimonialData => {
-      for (let i = 0; i < testimonialData.length; i++) {
-        apiCall(testimonialData[i].user, method).then(userData => {
-          testimonialData[i].user = userData;
-          apiCall(userData.profile, method).then(profileData => {
-            testimonialData[i].profile = profileData;
-          });
-        });
-      }
-      console.log(testimonialData);
-      this.setState({testimonials: testimonialData})
-    });
-  }
-
-  render() {
-    const responsive = {
+    this.responsive = {
       desktop: {
         breakpoint: { max: 3000, min: 1024 },
         items: 3,
@@ -49,38 +27,71 @@ export default class TestimonialCarousel extends Component {
       },
     };
 
-  let testimonials = this.state.testimonials;
+    this.colors = [
+      {'background': '#f6f3f2', 'text': '#08415c'},
+      {'background': '#c84630', 'text': '#f6f3f2'},
+      {'background': '#08415c', 'text': '#f6f3f2'},
+      {'background': '#5abcb9', 'text': '#08415c'},
+    ];
 
-  return (
-    <section className='testimonial-carousel'>
-      <Carousel
-        additionalTransfrom={0}
-        arrows
-        autoPlaySpeed={3000}
-        centerMode={false}
-        className=""
-        containerClass="container"
-        dotListClass=""
-        draggable
-        focusOnSelect={false}
-        infinite
-        itemClass=""
-        keyBoardControl
-        minimumTouchDrag={80}
-        renderButtonGroupOutside={false}
-        renderDotsOutside
-        responsive={responsive}
-      >
-        {
-          testimonials ?
-          testimonials.map((testimonial, i) => 
-            <p>{testimonial.text}</p>
-          )
-          :
-          <p>loading...</p>
+    this.state = {};
+  }
+
+  componentDidMount() {
+    let url = apiRoot + 'testimonials.json'
+    let method = 'get'
+
+    apiCall(url, method).then(testimonialData => {
+      for (let i = 0; i < testimonialData.length; i++) {
+        apiCall(testimonialData[i].user, method).then(userData => {
+          testimonialData[i].userData = userData;
+          apiCall(userData.profile, method).then(profileData => {
+            testimonialData[i].profileData = profileData;
+            this.setState({testimonials: testimonialData})
+          });
+        });
       }
-      </Carousel>
-    </section>
-  )
+    });
+  }
+
+  render() {
+    let testimonials = this.state.testimonials;
+
+    return (
+      <section className='testimonial-carousel'>
+        <Carousel
+          additionalTransfrom={0}
+          arrows
+          autoPlaySpeed={3000}
+          centerMode={false}
+          className=""
+          containerClass="container"
+          dotListClass=""
+          draggable
+          focusOnSelect={false}
+          infinite
+          itemClass=""
+          keyBoardControl
+          minimumTouchDrag={80}
+          renderButtonGroupOutside={false}
+          renderDotsOutside
+          responsive={this.responsive}
+        >
+          {
+            testimonials ?
+            testimonials.map((testimonial, i) => 
+              testimonial.userData && testimonial.profileData ? 
+                <TestimonialTile
+                  testimonial={testimonial} key={i} colors={this.colors[i % this.colors.length]}
+                />
+                :
+                <p key={i}>loading...</p>
+            )
+            :
+            <p>loading...</p>
+        }
+        </Carousel>
+      </section>
+    );
   }
 }
