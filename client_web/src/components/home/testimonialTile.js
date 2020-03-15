@@ -14,7 +14,7 @@ export default function TestimonialTile(props) {
     <div className='testimonial'>
       <img src={profile.picture ? profile.picture : '/assets/images/originals/silhouette.jpg'} />
       <div className='card' style={styles}>
-        <h3>{user.username}</h3>
+        <h4><strong>{user.username}</strong></h4>
         <p>{testimonial.text}</p>
       </div>
     </div>
