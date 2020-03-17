@@ -21,7 +21,7 @@ class TestimonialViewset(viewsets.ModelViewSet):
     """
     serializer_class = TestimonialSerializer
     permission_classes = (IsUserOrReadOnly,)
-    queryset = Testimonial.objects.all()
+    queryset = Testimonial.objects.all().order_by('pk')
 
     def perform_create(self, serializer):
         """

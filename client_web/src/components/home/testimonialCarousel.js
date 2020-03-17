@@ -42,12 +42,13 @@ export default class TestimonialCarousel extends Component {
     let method = 'get'
 
     apiCall(url, method).then(testimonialData => {
-      for (let i = 0; i < testimonialData.length; i++) {
-        apiCall(testimonialData[i].user, method).then(userData => {
-          testimonialData[i].userData = userData;
+      let testimonials = testimonialData.results;
+      for (let i = 0; i < testimonials.length; i++) {
+        apiCall(testimonials[i].user, method).then(userData => {
+          testimonials[i].userData = userData;
           apiCall(userData.profile, method).then(profileData => {
-            testimonialData[i].profileData = profileData;
-            this.setState({testimonials: testimonialData})
+            testimonials[i].profileData = profileData;
+            this.setState({testimonials: testimonials})
           });
         });
       }

@@ -1,7 +1,7 @@
 import {apiCall, apiRoot} from './api'
 
-const loginURL = apiRoot + 'api-auth/login/'
-const userURL = apiRoot + 'api-auth/user/'
+const loginURL = apiRoot + 'rest-auth/login/'
+const userURL = apiRoot + 'rest-auth/user/'
 
 
 /**

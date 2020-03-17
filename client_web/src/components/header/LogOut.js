@@ -20,7 +20,7 @@ export default class LogOut extends Component {
 
   render() {
     return (
-      <Button bsStyle="primary" onClick={this.logUserOut}>
+      <Button onClick={this.logUserOut}>
         Log Out
       </Button>
     );
